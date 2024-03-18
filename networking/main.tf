@@ -1,18 +1,3 @@
-# input variables decleration
-variable "availability_zones" {}
-variable "vpc_cidr_block" {}
-variable "vpc_public_subnet_cidr_blocks" {}
-variable "vpc_private_subnet_cidr_blocks" {}
-
-
-# output variables decleration
-output "vpc_id" { value = aws_vpc.app_vpc.id }
-output "public_subnet_ids" {
-    value = [for subnet in aws_subnet.app_vpc_public_subnets : subnet.id ]     
-}
-output "private_subnet_ids" {
-    value = [for subnet in aws_subnet.app_vpc_private_subnets : subnet.id ]     
-}
 
 
 # VPC Setup
@@ -98,3 +83,15 @@ resource "aws_route_table_association" "private_route_table_association" {
 }
 
 # Nat Gateway Setup
+resource "aws_eip" "elastic_ip" {
+    domain = "vpc"
+}
+
+resource "aws_nat_gateway" "nat_gtw" {
+    subnet_id = aws_subnet.app_vpc_public_subnets[0].id
+    allocation_id = aws_eip.elastic_ip.id
+
+    tags = {
+        Name = "Nat Gateway for Private Application Servers"
+    }
+}
