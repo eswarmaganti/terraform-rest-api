@@ -12,6 +12,31 @@ resource "aws_security_group" "security_group_public_bation" {
         cidr_blocks = ["0.0.0.0/0"]
         description = "Allow public Internet acces from pation instance"
     }
+
+    ingress {
+        from_port = 22
+        to_port = 22
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+        description = "Allow ssh on port 22"
+    }
+
+    tags = {
+        Name = "Public Bation Security Group"
+    }
+}
+
+# Security Group for webtier application instances
+resource "aws_security_group" "security_group_webtier" {
+    name = var.webtier_sg_name
+    vpc_id = var.vpc_id
+    egress {
+        from_port = 0
+        to_port = 0
+        protocol = -1
+        cidr_blocks = ["0.0.0.0/0"]
+        description = "Allow public Internet acces from pation instance"
+    }
     ingress {
         from_port = 80
         to_port = 80
@@ -30,14 +55,14 @@ resource "aws_security_group" "security_group_public_bation" {
         from_port = 22
         to_port = 22
         protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-        description = "Allow ssh on port 22"
+        cidr_blocks = [var.vpc_cidr_block]
+        description = "Allow ssh on port 22 from VPC"
     }
-    
     tags = {
-        Name = "Public Bation Security Group"
+        Name = "Webtier Application Security Group"
     }
 }
+
 
 # Security Group for application running in private subnet
 resource "aws_security_group" "security_group_application" {
@@ -58,7 +83,7 @@ resource "aws_security_group" "security_group_application" {
         description = "Allow private applications to access the public internet"
     }
     tags = {
-        Name = "Private Application Security Group"
+        Name = "Apptier Application Security Group"
     }
 }
 

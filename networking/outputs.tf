@@ -7,3 +7,6 @@ output "public_subnet_ids" {
 output "private_subnet_ids" {
     value = [for subnet in aws_subnet.app_vpc_private_subnets : subnet.id ]     
 }
+output "nat_gateway" {
+    value = aws_nat_gateway.nat_gtw
+}

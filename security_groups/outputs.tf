@@ -12,3 +12,7 @@ output "private_application_sg_id" {
 output "rds_mysql_sg_id" {
     value = aws_security_group.security_group_rds_mysql.id
 }
+
+output "webtier_application_sg_id" {
+    value = aws_security_group.security_group_webtier.id
+}
