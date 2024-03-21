@@ -23,3 +23,17 @@ resource "aws_eip" "elastic_ip" {
   instance   = aws_instance.public_bation_server.id
   depends_on = [aws_instance.public_bation_server, var.nat_gateway]
 }
+
+
+resource "null_resource" "file_provisioner" {
+  connection {
+    host        = aws_eip.elastic_ip.public_ip
+    user        = "ubuntu"
+    type        = "ssh"
+    private_key = file("/Users/eswarmaganti/.ssh/ec2_public_bation")
+  }
+  provisioner "file" {
+    source      = "/Users/eswarmaganti/.ssh/ec2_public_bation"
+    destination = ".ssh/ec2_public_bation"
+  }
+}
