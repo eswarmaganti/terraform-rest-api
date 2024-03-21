@@ -22,7 +22,7 @@ module "security_groups" {
 # EC2 Instance Setup
 module "ec2_instances" {
   source                             = "./ec2_instances"
-  ec2_ami_id                        = data.aws_ami.ubuntu_ami.id
+  ec2_ami_id                         = data.aws_ami.ubuntu_ami.id
   ec2_public_key                     = var.ec2_public_key
   ec2_key_name                       = var.ec2_key_name
   public_bation_sg_id                = module.security_groups.public_bation_sg_id
@@ -32,6 +32,8 @@ module "ec2_instances" {
   nat_gateway                        = module.networking.nat_gateway
 }
 
+
+# Auto Scaling Groups Setup for Webtier and Apptier Instancess
 module "auto_scaling_groups" {
   source = "./auto_scaling_groups"
 
@@ -55,6 +57,25 @@ module "auto_scaling_groups" {
 
   availability_zones = var.availability_zones
   ec2_key_name       = var.ec2_key_name
-  public_subnet_ids = module.networking.public_subnet_ids
+  public_subnet_ids  = module.networking.public_subnet_ids
   private_subnet_ids = module.networking.private_subnet_ids
 }
+
+
+# Target Group setup for Load Balencer
+module "load_balencer_target_group" {
+  source = "./load_balencer_target_group"
+  vpc_id = module.networking.vpc_id
+
+  webtier_asg_id            = module.auto_scaling_groups.webtier_asg_id
+  webtier_asg_arn           = module.auto_scaling_groups.webtier_asg_arn
+  webtier_target_group_name = "webtier-lb-target-group"
+  webtier_target_group_port = 80
+
+  apptier_asg_id            = module.auto_scaling_groups.apptier_asg_id
+  apptier_asg_arn           = module.auto_scaling_groups.apptier_asg_arn
+  apptier_target_group_name = "apptier-lb-target-group"
+  apptier_target_group_port = 5000
+
+}
+
