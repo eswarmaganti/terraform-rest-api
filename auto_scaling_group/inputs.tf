@@ -1,0 +1,11 @@
+variable "vpc_id" {}
+variable "app_ami_id" {}
+variable "app_instance_type" {}
+variable "ec2_key_name" {}
+variable "app_sg_ids" {}
+variable "private_subnet_ids" {}
+variable "app_asg_name" {}
+variable "app_tg_arn" {}
+variable "app_asg_desired_capacity" {}
+variable "app_asg_max_size" {}
+variable "app_asg_min_size" {}
