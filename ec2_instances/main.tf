@@ -37,3 +37,6 @@ resource "null_resource" "file_provisioner" {
     destination = ".ssh/ec2_public_bation"
   }
 }
+
+
+

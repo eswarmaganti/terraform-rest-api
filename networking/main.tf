@@ -72,6 +72,7 @@ resource "aws_eip" "nat_gtw_eip" {
   tags = {
     Name = "Elastic IP for NAT Gateway"
   }
+  depends_on = [ aws_internet_gateway.app_igw ]
 }
 
 # creating a NAT Gateway in public subnet
