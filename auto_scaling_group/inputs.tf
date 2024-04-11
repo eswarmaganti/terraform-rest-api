@@ -9,3 +9,6 @@ variable "app_tg_arn" {}
 variable "app_asg_desired_capacity" {}
 variable "app_asg_max_size" {}
 variable "app_asg_min_size" {}
+variable "documentdb_uri" {}
+variable "documentdb_username" {}
+variable "documentdb_password" {}

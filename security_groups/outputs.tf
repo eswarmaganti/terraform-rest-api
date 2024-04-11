@@ -9,6 +9,6 @@ output "app_sg_id" {
 }
 
 # Security Group id of RDS MySQL server
-output "rds_mysql_sg_id" {
-  value = aws_security_group.security_group_rds_mysql.id
+output "docdb_sg_id" {
+  value = aws_security_group.security_group_docdb.id
 }

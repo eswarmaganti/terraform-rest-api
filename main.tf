@@ -15,7 +15,20 @@ module "security_groups" {
   vpc_cidr_block        = var.vpc_cidr_block
   public_bation_sg_name = "public-bation-security-group"
   app_sg_name           = "application-security-group"
-  rds_mysql_sg_name     = "rds-mysql-security-group"
+  docdb_sg_name         = "documentdb-security-group"
+  docdb_port            = 27017
+}
+
+module "documentdb" {
+  source                = "./documentdb"
+  db_instance_class     = "db.t3.medium"
+  docdb_cluster_name    = "mern-app-documentdb"
+  docdb_master_username = var.docdb_master_username
+  docdb_master_password = var.docdb_master_password
+  docdb_sg_ids          = [module.security_groups.docdb_sg_id]
+  availability_zones    = var.availability_zones
+  docdb_port            = 27017
+  docdb_subnet_group_id = module.networking.docdb_subnet_group_id
 }
 
 # Public Bation Instance Setup
@@ -34,7 +47,7 @@ module "ec2_instances" {
 module "loadbalencer_target_group" {
   source          = "./loadbalencer_target_group"
   vpc_id          = module.networking.vpc_id
-  app_tg_port     = 80
+  app_tg_port     = 5001
   app_tg_protocol = "HTTP"
 }
 
@@ -53,18 +66,39 @@ module "auto_scaling_group" {
   app_asg_min_size         = 2
   app_tg_arn               = module.loadbalencer_target_group.app_tg_arn
   private_subnet_ids       = module.networking.private_subnet_ids
+  documentdb_uri           = module.documentdb.docdb_cluster_endpoint
+  documentdb_username      = var.docdb_master_username
+  documentdb_password      = var.docdb_master_password
+  depends_on               = [module.ec2_instances, module.documentdb]
 }
 
 
 module "elastic_load_balencer" {
-  source                    = "./elastic_load_balencer"
-  app_lb_name               = "application-load-balencer"
-  app_lb_type               = "application"
-  internal                  = "false"
-  app_sg_ids                = [module.security_groups.app_sg_id]
-  public_subnet_ids        = module.networking.public_subnet_ids
-  app_http_listner_port     = 80
-  app_http_listner_protocol = "HTTP"
-  app_tg_arn                = module.loadbalencer_target_group.app_tg_arn
+  source                     = "./elastic_load_balencer"
+  app_lb_name                = "application-load-balencer"
+  app_lb_type                = "application"
+  internal                   = "false"
+  app_sg_ids                 = [module.security_groups.app_sg_id]
+  public_subnet_ids          = module.networking.public_subnet_ids
+  app_http_listner_port      = 80
+  app_http_listner_protocol  = "HTTP"
+  app_tg_arn                 = module.loadbalencer_target_group.app_tg_arn
+  app_https_listner_port     = 443
+  app_https_listner_protocol = "HTTPS"
+  ssl_certificate_arn        = module.certificate_manager.ssl_certificate_arn
 
+}
+
+module "hosted_zone" {
+  source             = "./hosted_zone"
+  domain_name        = var.app_domain_name
+  aws_hosted_zone_id = data.aws_route53_zone.hosted_zone.id
+  aws_lb_dns_name    = module.elastic_load_balencer.app_lb_dns_name
+  aws_lb_zone_id     = module.elastic_load_balencer.app_lb_zone_id
+}
+
+module "certificate_manager" {
+  source         = "./certificate_manager"
+  domain_name    = var.app_domain_name
+  hosted_zone_id = data.aws_route53_zone.hosted_zone.id
 }

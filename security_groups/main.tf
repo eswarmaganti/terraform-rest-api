@@ -52,6 +52,13 @@ resource "aws_security_group" "app_security_group" {
     description = "Allow HTTPS on port 80"
   }
   ingress {
+    from_port   = 5001
+    to_port     = 5001
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTPS on port 5001"
+  }
+  ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -65,16 +72,17 @@ resource "aws_security_group" "app_security_group" {
 
 
 # Security Group for RDS Database server
-resource "aws_security_group" "security_group_rds_mysql" {
+resource "aws_security_group" "security_group_docdb" {
   vpc_id = var.vpc_id
-  name   = var.rds_mysql_sg_name
+  name   = var.docdb_sg_name
   ingress {
 
-    from_port   = 3306
-    to_port     = 3306
-    cidr_blocks = [var.vpc_cidr_block]
-    protocol    = "tcp"
-    description = "Allow port 3306 to enable applications to connect to MySQL DB"
+    from_port = var.docdb_port
+    to_port   = var.docdb_port
+    # cidr_blocks = [var.vpc_cidr_block]
+    security_groups = [aws_security_group.app_security_group.id]
+    protocol        = "tcp"
+    description     = "Allow port 27017 to enable applications to connect to Amazon Document DB"
   }
   egress {
     from_port   = 0
@@ -84,6 +92,6 @@ resource "aws_security_group" "security_group_rds_mysql" {
     description = "Allow database server to access the public internet"
   }
   tags = {
-    Name = "RDS MySQL DB Security Group"
+    Name = "AWS DocumentDB Security Group"
   }
 }

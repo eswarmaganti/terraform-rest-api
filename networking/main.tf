@@ -72,7 +72,7 @@ resource "aws_eip" "nat_gtw_eip" {
   tags = {
     Name = "Elastic IP for NAT Gateway"
   }
-  depends_on = [ aws_internet_gateway.app_igw ]
+  depends_on = [aws_internet_gateway.app_igw]
 }
 
 # creating a NAT Gateway in public subnet
@@ -109,3 +109,18 @@ resource "aws_route_table_association" "private_route_table_association" {
   subnet_id      = aws_subnet.app_vpc_private_subnets[count.index].id
   route_table_id = aws_route_table.app_vpc_private_route_table.id
 }
+
+
+# Create Database subnets
+resource "aws_docdb_subnet_group" "doocdb_subnet_group" {
+
+  name       = "docdb-subnet-group"
+  subnet_ids = [aws_subnet.app_vpc_private_subnets[0].id, aws_subnet.app_vpc_private_subnets[1].id]
+
+  tags = {
+    Name = "My docdb subnet group"
+  }
+}
+# create route table for database subnets
+
+# create route table association for db subnets

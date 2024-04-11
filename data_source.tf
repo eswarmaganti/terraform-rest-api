@@ -17,3 +17,9 @@ data "aws_ami" "ubuntu_ami" {
     values = ["hvm"]
   }
 }
+
+
+data "aws_route53_zone" "hosted_zone" {
+  name         = "eswarmaganti.com"
+  private_zone = false
+}

@@ -27,3 +27,17 @@ variable "ec2_key_name" {
   type        = string
   description = "The key name to create a new key pair for public bation instance"
 }
+
+variable "app_domain_name" {
+  type = string
+  description = "The domain name of the application"
+}
+variable "docdb_master_username" {
+  type = string
+  description = "The username of document db"
+}
+variable "docdb_master_password" {
+  type = string
+  sensitive = true
+  description = "The password of Document DB"
+}
