@@ -25,18 +25,18 @@ resource "aws_eip" "elastic_ip" {
 }
 
 
-resource "null_resource" "file_provisioner" {
-  connection {
-    host        = aws_eip.elastic_ip.public_ip
-    user        = "ubuntu"
-    type        = "ssh"
-    private_key = file("/Users/eswarmaganti/.ssh/ec2_public_bation")
-  }
-  provisioner "file" {
-    source      = "/Users/eswarmaganti/.ssh/ec2_public_bation"
-    destination = ".ssh/ec2_public_bation"
-  }
-}
+# resource "null_resource" "file_provisioner" {
+#   connection {
+#     host        = aws_eip.elastic_ip.public_ip
+#     user        = "ubuntu"
+#     type        = "ssh"
+#     private_key = file("/Users/eswarmaganti/.ssh/ec2_public_bation")
+#   }
+#   provisioner "file" {
+#     source      = "/Users/eswarmaganti/.ssh/ec2_public_bation"
+#     destination = ".ssh/ec2_public_bation"
+#   }
+# }
 
 
 
