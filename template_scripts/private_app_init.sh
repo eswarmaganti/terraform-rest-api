@@ -36,7 +36,7 @@ yes | sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-p
 sudo usermod -aG docker $USER
 sudo chmod 666 /var/run/docker.sock
 
-wget -p /home/ubuntu https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
+wget -P /home/ubuntu https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
 
 # documentdb_certificate_path=$(printf %s "$(pwd)/global-bundle.pem" | jq -sRr @uri)
 echo $documentdb_certificate_path
