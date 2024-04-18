@@ -38,7 +38,7 @@ sudo usermod -aG docker $USER
 wget https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
 
 documentdb_certificate_path=$(printf %s "$(pwd)/global-bundle.pem" | jq -sRr @uri)
-mongodb_uri="mongodb://${documentdb_username}:${documentdb_password}@${documentdb_uri}:27017/?tls=true&tlsCAFile=$${documentdb_certificate_path}&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
+mongodb_uri="mongodb://${documentdb_username}:${documentdb_password}@${documentdb_uri}:27017/?tls=true&tlsCAFile=${documentdb_certificate_path}&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
 
 
 docker pull eswarmaganti/mern-tasks-app:amd64
