@@ -30,11 +30,11 @@ yes | sudo apt install git
 
 
 sudo mkdir /opt/SP
-sudo chown -R ubuntu /opt/SP
+sudo chown -R ubuntu:ubuntu /opt/SP
 cd /opt/SP
 # pull the github repo
-git clone https://github.com/eswarmaganti/mern-todo-app.git
-
+git clone https://github.com/eswarmaganti/mern-tasks-app.git
+sudo chown -R ubuntu:ubuntu /opt/SP/mern-tasks-app
 sleep 10
 
 # install the DocumentDB Certificate

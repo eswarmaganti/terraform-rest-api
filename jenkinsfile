@@ -1,0 +1,37 @@
+pipeline{
+    agent any
+    stages{
+        stage('checkout'){
+            steps{
+                git url:'https://github.com/eswarmaganti/terraform-rest-api.git',branch:'main'
+            }
+        }
+        stage('init'){
+            steps{
+                sh 'terraform init'
+            }
+        }
+        stage('plan'){
+            steps{
+                withAWS(credentials:'aws_creds'){
+                    sh 'terraform plan'
+                }
+            }
+        }
+        stage('Terraform Action'){
+            steps{
+                withAWS(credentials:'aws_creds'){
+                    sh 'terraform ${action} -auto-approve'
+                }
+            }
+        }
+    }
+    post{
+        success{
+            echo "*** SUCCESS: Infra provisioned successfully ***"
+        }
+        failure{
+            echo "*** FAILURE: Failed to provision Infra ***"
+        }
+    }
+}

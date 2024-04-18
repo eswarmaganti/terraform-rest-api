@@ -6,7 +6,7 @@ resource "aws_launch_template" "app_launch_template" {
   key_name      = var.ec2_key_name
   user_data = base64encode(
     templatefile(
-      "./template_scripts/app_init.sh",
+      "./template_scripts/private_app_init.sh",
       { documentdb_uri = var.documentdb_uri, documentdb_username = var.documentdb_username, documentdb_password = var.documentdb_password }
   ))
   network_interfaces {
