@@ -45,5 +45,5 @@ docker pull eswarmaganti/mern-tasks-app
 
 docker run -d --name mern-tasks-app \
   -p 5001:5001 \
-  -e MONGODB_URI=$mongodb_uri
-  eswarmaganti/mern-tasks-app
+  -e MONGODB_URI=$mongodb_uri \
+  eswarmaganti/mern-tasks-app 
