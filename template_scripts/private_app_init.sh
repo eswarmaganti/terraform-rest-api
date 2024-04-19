@@ -36,11 +36,8 @@ yes | sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-p
 sudo usermod -aG docker $USER
 sudo chmod 666 /var/run/docker.sock
 
-wget -P /home/ubuntu https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
 
-# documentdb_certificate_path=$(printf %s "$(pwd)/global-bundle.pem" | jq -sRr @uri)
-echo $documentdb_certificate_path
-mongodb_uri="mongodb://${documentdb_username}:${documentdb_password}@${documentdb_uri}:27017/?tls=true&tlsCAFile=/home/ubuntu/global-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
+mongodb_uri="mongodb://${documentdb_username}:${documentdb_password}@${documentdb_uri}:27017/?tls=true&tlsCAFile=%2Fapp%2Fglobal-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
 
 
 docker pull eswarmaganti/mern-tasks-app:amd64
@@ -49,4 +46,3 @@ docker run -d --name mern-tasks-app \
   -p 5001:5001 \
   -e MONGODB_URI=$mongodb_uri \
   eswarmaganti/mern-tasks-app:amd64 
-
